@@ -1,10 +1,15 @@
-import { async } from "@firebase/util";
-import { signInWithGooglePopup,createUserDocumentFromAuth } from "../../utils/firebase/utils.firebase";
-const SignIn=()=>{
+import {signInWithGooglePopup,createUserDocumentFromAuth } from "../../utils/firebase/utils.firebase";
+import { SignUpForm } from "../../components/sign-up-form/sign-up-form.component";
+import { useState } from "react";
 
+
+const SignIn=()=>{
+    
+    
+  
     const logGoogleUser=async()=>{
         const {user}=await signInWithGooglePopup();
-        createUserDocumentFromAuth(user);
+        const userDocRef= await createUserDocumentFromAuth(user);
     }
 
     return(
@@ -12,6 +17,8 @@ const SignIn=()=>{
             
             <h2>I am a SignIn Page</h2>
             <button onClick={logGoogleUser}>Sign In With Google</button>
+            <SignUpForm />
+           
         </div>
     )
 }

@@ -1,6 +1,6 @@
 import { async } from "@firebase/util";
 import { initializeApp } from "firebase/app";
-import{getAuth,signInWithRedirect,signInWithPopup,GoogleAuthProvider} from "firebase/auth";
+import{getAuth,signInWithRedirect,signInWithPopup,GoogleAuthProvider,createUserWithEmailAndPassword} from "firebase/auth";
 import {getFirestore,doc,setDoc,getDoc} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -25,10 +25,11 @@ provider.setCustomParameters({
 })
 export const auth=getAuth();
 export const signInWithGooglePopup=()=>signInWithPopup(auth,provider);
+export const signInWithGoogleRedirect=()=>signInWithRedirect(auth,provider);
 
 export const db=getFirestore();
 
-export const createUserDocumentFromAuth= async(userAuth)=>{
+export const createUserDocumentFromAuth= async(userAuth,additionalInformation={})=>{
 
 const userDocRef=doc(db,'users',userAuth.uid);
 
@@ -42,7 +43,7 @@ if(!userSnapshot.exists()){
 
 try{
   await setDoc(userDocRef,{
-    displayName,email,createdAt
+    displayName,email,createdAt,...additionalInformation
   });
   }
   catch(error){
@@ -50,4 +51,9 @@ try{
   }
 }
 return userDocRef;
+}
+export const createAuthUserWithEmailAndPassword=async(email,password)=>{
+if(!email || !password) return;
+
+return await createUserWithEmailAndPassword(auth,email,password);
 }
